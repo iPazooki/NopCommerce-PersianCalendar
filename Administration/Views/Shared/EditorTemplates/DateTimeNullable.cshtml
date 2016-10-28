@@ -1,0 +1,30 @@
+@using System.Globalization
+@using Calendar = Persia.Calendar
+@model DateTime?
+
+@{
+    var persianDate = string.Empty;
+    if (Model.HasValue)
+    {
+        var solarDate = Calendar.ConvertToPersian(Model.Value);
+        persianDate = solarDate.ToString();
+    }
+}
+
+<input type="hidden" id="@ViewData.TemplateInfo.GetFullHtmlFieldId(string.Empty)" name="@ViewData.TemplateInfo.GetFullHtmlFieldName(string.Empty)" value="@(Model > DateTime.MinValue || Model.HasValue ? Model.Value.ToString(CultureInfo.CurrentCulture.DateTimeFormat) : null)"/>
+
+<input id="@string.Format("{0}-persian", ViewData.TemplateInfo.GetFullHtmlFieldId(string.Empty))" value="@persianDate"/>
+
+<script>
+    $(document).ready(function () {
+        //$("#@ViewData.TemplateInfo.GetFullHtmlFieldId(string.Empty)").kendoDateTimePicker();
+        $("#@ViewData.TemplateInfo.GetFullHtmlFieldId(string.Empty)-persian").kendoDatePicker();
+
+        $("#@ViewData.TemplateInfo.GetFullHtmlFieldId(string.Empty)-persian").change(function () {
+
+            var innerDate = $('#@ViewData.TemplateInfo.GetFullHtmlFieldId(string.Empty)-persian').data('kendoDatePicker').value().gregoriandate;
+
+            $("#@ViewData.TemplateInfo.GetFullHtmlFieldId(string.Empty)").val(innerDate.toLocaleDateString());
+        });
+    });
+</script>
